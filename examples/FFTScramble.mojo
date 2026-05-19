@@ -33,11 +33,13 @@ struct FFTScrambleWindow(FFTProcessable):
     def scramble(mut self) -> None:
         self.swaps.clear()
         for _ in range(self.nscrambles):
-            i = rrand(0, self.nbins - 1)
+            i_f = linlin(random_float64() ** 3, 0.0, 1.0, 0.0, Float64(self.nbins - 1))
+            i = Int(i_f)
             minj = max(i - self.scramble_range,0)
             maxj = min(i + self.scramble_range, self.nbins - 1)
-            j = rrand(minj, maxj)
-            self.swaps.append((Int(i),Int(j)))
+            j_f = rrand(minj, maxj)
+            j = Int(j_f)
+            self.swaps.append((i,j))
     
     def get_messages(mut self) -> None:
         self.m.update(self.nscrambles,"n_scrambles")

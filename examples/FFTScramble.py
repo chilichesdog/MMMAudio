@@ -10,8 +10,8 @@ mmm_audio = MMMAudio(
 
 mmm_audio.start_audio()
 
-mmm_audio.send_int("n_scrambles",100)
-mmm_audio.send_int("scramble_range",40)
+mmm_audio.send_int("n_scrambles",80)
+mmm_audio.send_int("scramble_range",20)
 
 mmm_audio.send_trig("scramble")
 
