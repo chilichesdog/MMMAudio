@@ -21,7 +21,7 @@ struct WorkshopFFTWindow(FFTProcessable):
         # (remove "pass")
         pass
 
-struct WorkshopFFTTemplate(Movable, Copyable):
+struct FFTTemplate(Movable, Copyable):
     var world: World
     var buffer: Buffer
     var playBuf: Play

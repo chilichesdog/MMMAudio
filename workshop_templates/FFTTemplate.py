@@ -4,7 +4,7 @@ mmm_audio = MMMAudio(
     in_device='default',
     out_device='default',
     blocksize=128, 
-    graph_name="WorkshopFFTTemplate",
+    graph_name="FFTTemplate",
     package_name="workshop_templates"
     )
 
