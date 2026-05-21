@@ -54,12 +54,12 @@ struct Messenger(Copyable, Movable):
     #     return UnsafePointer(to=self.key_dict[name])
 
     # update Bool
-    def update(mut self, mut param: Bool, name: String):
+    def update(mut self, name: String, mut param: Bool):
         """Update a Bool variable with a value sent from Python.
 
         Args:
-            param: A `Bool` variable to be updated.
             name: A `String` to identify the Bool sent from Python.
+            param: A `Bool` variable to be updated.
         """
         if self.world[].top_of_block:
             try:
@@ -71,12 +71,12 @@ struct Messenger(Copyable, Movable):
                 print("Error occurred while updating bool message. Error: ", error)
 
     # notify_update Bool
-    def notify_update(mut self, mut param: Bool, name: String) -> Bool:
+    def notify_update(mut self, name: String, mut param: Bool) -> Bool:
         """Notify and update a Bool variable with a value sent from Python.
 
         Args:
-            param: A `Bool` variable to be updated.
             name: A `String` to identify the Bool sent from Python.
+            param: A `Bool` variable to be updated.
 
         Returns:
             A `Bool` indicating whether the parameter was updated.
@@ -93,7 +93,7 @@ struct Messenger(Copyable, Movable):
         return False
 
     # update List[Bool]
-    # def update(mut self, mut param: List[Bool], name: String):
+    # def update(mut self, name: String, mut param: List[Bool]):
     #     if self.world[].top_of_block:
     #         try:
     #             var opt = self.world[].messenger_manager[].get_bools(self.get_name_with_namespace(name)[])
@@ -103,7 +103,7 @@ struct Messenger(Copyable, Movable):
     #             print("Error occurred while updating bool message. Error: ", error)
 
     # # notify_update List[Bool]
-    # def notify_update(mut self, mut param: List[Bool], name: String) -> Bool:
+    # def notify_update(mut self, name: String, mut param: List[Bool]) -> Bool:
     #     if self.world[].top_of_block:
     #         try:
     #             var opt = self.world[].messenger_manager[].get_bools(self.get_name_with_namespace(name)[])
@@ -115,12 +115,12 @@ struct Messenger(Copyable, Movable):
     #     return False
 
     # update Float64
-    def update(mut self, mut param: Float64, name: String):
+    def update(mut self, name: String, mut param: Float64):
         """Update a Float64 variable with a value sent from Python.
 
         Args:
-            param: A `Float64` variable to be updated.
             name: A `String` to identify the Float64 sent from Python.
+            param: A `Float64` variable to be updated.
         """
         
         if self.world[].top_of_block:
@@ -133,12 +133,12 @@ struct Messenger(Copyable, Movable):
                 print("Error occurred while updating float message. Error: ", error)
 
     # notify_update Float64
-    def notify_update(mut self, mut param: Float64, name: String) -> Bool:
+    def notify_update(mut self, name: String, mut param: Float64) -> Bool:
         """Notify and update a Float64 variable with a value sent from Python.
 
         Args:
-            param: A `Float64` variable to be updated.
             name: A `String` to identify the Float64 sent from Python.
+            param: A `Float64` variable to be updated.
 
         Returns:
             A `Bool` indicating whether the parameter was updated.
@@ -155,12 +155,12 @@ struct Messenger(Copyable, Movable):
         return False
 
     # update List[Float64]
-    def update(mut self, mut param: List[Float64], ref name: String):
+    def update(mut self, name: String, mut param: List[Float64]):
         """Update a List[Float64] variable with a value sent from Python.
 
         Args:
-            param: A `List[Float64]` variable to be updated. The List will be resized to match the incoming data.
             name: A `String` to identify the List[Float64] sent from Python.
+            param: A `List[Float64]` variable to be updated. The List will be resized to match the incoming data.
         """
         if self.world[].top_of_block:
             try:
@@ -172,12 +172,12 @@ struct Messenger(Copyable, Movable):
                 print("Error occurred while updating float list message. Error: ", error)
 
     # notify_update List[Float64]
-    def notify_update(mut self, mut param: List[Float64], ref name: String) -> Bool:
+    def notify_update(mut self, name: String, mut param: List[Float64]) -> Bool:
         """Notify and update a List[Float64] variable with a value sent from Python.
 
         Args:
-            param: A `List[Float64]` variable to be updated. The List will be resized to match the incoming data.
             name: A `String` to identify the List[Float64] sent from Python.
+            param: A `List[Float64]` variable to be updated. The List will be resized to match the incoming data.
 
         Returns:
             A `Bool` indicating whether the parameter was updated.
@@ -193,12 +193,12 @@ struct Messenger(Copyable, Movable):
                 print("Error occurred while updating float list message. Error: ", error)
         return False
 
-    def update[dtype: DType, num_chans: Int](mut self, mut param: SIMD[dtype, num_chans], name: String):
+    def update[dtype: DType, num_chans: Int](mut self, name: String, mut param: SIMD[dtype, num_chans]):
         """Update a SIMD[DType.float64] variable with a value sent from Python.
 
         Args:
-            param: A `SIMD[DType.float64]` variable to be updated. The SIMD will *not* be resized to match the incoming data. It is the user's responsibility to ensure the sizes match.
             name: A `String` to identify the SIMD[DType.float64] sent from Python.
+            param: A `SIMD[DType.float64]` variable to be updated. The SIMD will *not* be resized to match the incoming data. It is the user's responsibility to ensure the sizes match.
         """
         if self.world[].top_of_block:
             try:
@@ -210,12 +210,12 @@ struct Messenger(Copyable, Movable):
             except error:
                 print("Error occurred while updating float SIMD message. Error: ", error)
 
-    def notify_update[dtype: DType, num_chans: Int](mut self, mut param: SIMD[dtype, num_chans], name: String) -> Bool:
+    def notify_update[dtype: DType, num_chans: Int](mut self, name: String, mut param: SIMD[dtype, num_chans]) -> Bool:
         """Notify and update a SIMD[DType.float64] variable with a value sent from Python.
 
         Args:
-            param: A `SIMD[DType.float64]` variable to be updated. The SIMD will *not* be resized to match the incoming data. It is the user's responsibility to ensure the sizes match.
             name: A `String` to identify the SIMD[DType.float64] sent from Python.
+            param: A `SIMD[DType.float64]` variable to be updated. The SIMD will *not* be resized to match the incoming data. It is the user's responsibility to ensure the sizes match.
 
         Returns:
             A `Bool` indicating whether the parameter was updated.
@@ -233,12 +233,12 @@ struct Messenger(Copyable, Movable):
         return False
 
     # update Int
-    def update(mut self, mut param: Int, name: String):
+    def update(mut self, name: String, mut param: Int):
         """Update a Int variable with a value sent from Python.
 
         Args:
-            param: A `Int` variable to be updated.
             name: A `String` to identify the Int sent from Python.
+            param: A `Int` variable to be updated.
         """
         if self.world[].top_of_block:
             try:
@@ -250,12 +250,12 @@ struct Messenger(Copyable, Movable):
                 print("Error occurred while updating int message. Error: ", error)
 
     # notify_update Int
-    def notify_update(mut self, mut param: Int, name: String) -> Bool:
+    def notify_update(mut self, name: String, mut param: Int) -> Bool:
         """Notify and update a Int variable with a value sent from Python.
 
         Args:
-            param: A `Int` variable to be updated.
             name: A `String` to identify the Int sent from Python.
+            param: A `Int` variable to be updated.
 
         Returns:
             A `Bool` indicating whether the parameter was updated.
@@ -272,12 +272,12 @@ struct Messenger(Copyable, Movable):
         return False
 
     # update List[Int]
-    def update(mut self, mut param: List[Int], ref name: String):
+    def update(mut self, name: String, mut param: List[Int]):
         """Update a List[Int] variable with a value sent from Python.
 
         Args:
-            param: A `List[Int]` variable to be updated. The List will be resized to match the incoming data.
             name: A `String` to identify the List[Int] sent from Python.
+            param: A `List[Int]` variable to be updated. The List will be resized to match the incoming data.
         """
         if self.world[].top_of_block:
             try:
@@ -289,12 +289,12 @@ struct Messenger(Copyable, Movable):
                 print("Error occurred while updating int list message. Error: ", error)
 
     # notify_update List[Int]
-    def notify_update(mut self, mut param: List[Int], ref name: String) -> Bool:
+    def notify_update(mut self, name: String, mut param: List[Int]) -> Bool:
         """Notify and update a List[Int] variable with a value sent from Python.
 
         Args:
-            param: A `List[Int]` variable to be updated. The List will be resized to match the incoming data.
             name: A `String` to identify the List[Int] sent from Python.
+            param: A `List[Int]` variable to be updated. The List will be resized to match the incoming data.
 
         Returns:
             A `Bool` indicating whether the parameter was updated.
@@ -311,12 +311,12 @@ struct Messenger(Copyable, Movable):
         return False
 
     # update String
-    def update(mut self, mut param: String, name: String):
+    def update(mut self, name: String, mut param: String):
         """Update a String variable with a value sent from Python.
         
         Args:
-            param: A `String` variable to be updated.
             name: A `String` to identify the String sent from Python.
+            param: A `String` variable to be updated.
         """
         if self.world[].top_of_block:
             try:
@@ -328,12 +328,12 @@ struct Messenger(Copyable, Movable):
                 print("Error occurred while updating text message. Error: ", error)
 
     # notify_update String
-    def notify_update(mut self, mut param: String, name: String) -> Bool:
+    def notify_update(mut self, name: String, mut param: String) -> Bool:
         """Notify and update a String variable with a value sent from Python.
 
         Args:
-            param: A `String` variable to be updated.
             name: A `String` to identify the String sent from Python.
+            param: A `String` variable to be updated.
 
         Returns:
             A `Bool` indicating whether the parameter was updated.
@@ -350,12 +350,12 @@ struct Messenger(Copyable, Movable):
         return False
 
     # update List[String]
-    def update(mut self, mut param: List[String], name: String):
+    def update(mut self, name: String, mut param: List[String]):
         """Update a List[String] variable with a value sent from Python.
 
         Args:
-            param: A `List[String]` variable to be updated. The List will be resized to match the incoming data.
             name: A `String` to identify the List[String] sent from Python.
+            param: A `List[String]` variable to be updated. The List will be resized to match the incoming data.
         """
         if self.world[].top_of_block:
             try:
@@ -367,12 +367,12 @@ struct Messenger(Copyable, Movable):
                 print("Error occurred while updating text message. Error: ", error)
     
     # notify_update List[String]
-    def notify_update(mut self, mut param: List[String], name: String) -> Bool:
+    def notify_update(mut self, name: String, mut param: List[String]) -> Bool:
         """Notify and update a List[String] variable with a value sent from Python.
 
         Args:
-            param: A `List[String]` variable to be updated. The List will be resized to match the incoming data.
             name: A `String` to identify the List[String] sent from Python.
+            param: A `List[String]` variable to be updated. The List will be resized to match the incoming data.
 
         Returns:
             A `Bool` indicating whether the parameter was updated.
@@ -641,14 +641,14 @@ struct MessengerManager(Movable, Copyable):
     # been transferred from the pools to the Dicts. These functions are called
     # from a graph (likely via a Messenger instance) to get the latest message values.
     @always_inline
-    def get_bool(mut self, ref key: String) raises -> Optional[Bool]:
+    def get_bool(mut self, key: String) raises -> Optional[Bool]:
         if key in self.bool_msgs:
             self.bool_msgs[key].retrieved = True
             return self.bool_msgs[key].value
         return None
 
     @always_inline
-    def get_bools(mut self: Self, ref key: String) raises-> Optional[List[Bool]]:
+    def get_bools(mut self: Self, key: String) raises-> Optional[List[Bool]]:
         if key in self.bools_msgs:
             self.bools_msgs[key].retrieved = True
             # Copy is ok here because it will only copy when there is a
@@ -660,14 +660,14 @@ struct MessengerManager(Movable, Copyable):
         return None
     
     @always_inline
-    def get_float(mut self, ref key: String) raises -> Optional[Float64]:
+    def get_float(mut self, key: String) raises -> Optional[Float64]:
         if key in self.float_msgs:
             self.float_msgs[key].retrieved = True
             return self.float_msgs[key].value
         return None
 
     @always_inline
-    def get_floats(mut self: Self, ref key: String) raises-> Optional[List[Float64]]:
+    def get_floats(mut self: Self, key: String) raises-> Optional[List[Float64]]:
         if key in self.floats_msgs:
             self.floats_msgs[key].retrieved = True
             # Copy is ok here because it will only copy when there is a
@@ -679,28 +679,28 @@ struct MessengerManager(Movable, Copyable):
         return None
 
     @always_inline
-    def get_int(mut self, ref key: String) raises -> Optional[Int]:
+    def get_int(mut self, key: String) raises -> Optional[Int]:
         if key in self.int_msgs:
             self.int_msgs[key].retrieved = True
             return self.int_msgs[key].value
         return None
 
     @always_inline
-    def get_ints(mut self, ref key: String) raises -> Optional[List[Int]]:
+    def get_ints(mut self, key: String) raises -> Optional[List[Int]]:
         if key in self.ints_msgs:
             self.ints_msgs[key].retrieved = True
             return self.ints_msgs[key].value.copy()
         return None
 
     @always_inline
-    def get_string(mut self, ref key: String) raises -> Optional[String]:
+    def get_string(mut self, key: String) raises -> Optional[String]:
         if key in self.string_msgs:
             self.string_msgs[key].retrieved = True
             return self.string_msgs[key].value
         return None
 
     @always_inline
-    def get_strings(mut self, ref key: String) raises -> Optional[List[String]]:
+    def get_strings(mut self, key: String) raises -> Optional[List[String]]:
         if key in self.strings_msgs:
             self.strings_msgs[key].retrieved = True
             return self.strings_msgs[key].value.copy()
