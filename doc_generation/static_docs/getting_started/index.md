@@ -101,70 +101,7 @@ VSCode is amazing, but most of the issues users encounter are caused by VSCode's
 
 ## 2w. Setup the Environment on Windows/WSL2 with Ubuntu
 
-Here are some hints to get the audio samples running under Windows/WSL2. 
-I used the Unbuntu distro, but if you adapt the package manager, it will also work on other distributions.
-
-First, you need to install WSL2. Follow online guides to get this installed. This involves and install and a restart of your computer.
-
-Use your package manager to install `portaudio` and `hidapi` as system-wide c libraries. On Ubuntu this is:
-
-```shell
-sudo apt update
-sudo apt install libportaudio2 portaudio19-dev
-sudo apt install libhidapi-hidraw0 libhidapi-dev
-sudo apt install pulseaudio
-```
-
-Use your package manager to install `ALSA runtime` and `ASLA utilities` as system-wide c libraries. On Ubuntu this is:
-
-```shell
-sudo apt install alsa-utils
-sudo apt install libasound2-dev
-```
-
-Verify the installation. You should see a version number
-
-```shell
-aplay --version
-pkg-config --modversion alsa
-```
-
-To make the Windows audio devices "visible" inside WSL2, please install and configure PulseAudio bridge as follows:
-
-Use youe packagemanger to install `PulseAudio`. On Ubuntu this is:
-```shell
-sudo apt install pulseaudio alsa-utils
-```
-
-Create a sound config rc file in your user home directory with the follwing content:
-~/.asoundrc
-```shell
-pcm.!default {
-    type pulse
-}
-ctl.!default {
-    type pulse
-}
-```
-
-Start pulseaudio and verify that the WSLg PulseAudio server is reachable:
-```shell
-pulseaudio --start
-ls -l /mnt/wslg/PulseServer
-```
-
-Check also that PortAudio detects PulseAudio
-```shell
-pactl info
-```
-
-Go back to 2b.1 or 2b.2 to create your virtual environment and choose your interpreter
-
-Now run your MMMAudio script WITHOUT running pulseaudio --start and enjoy the sound:
-```shell
-python3 examples/DefaultGraph.py
-```
-
+Go to [MMMAudio-WindowsSetup](MMMAudio-WindowsSetup.md)
 
 ## 3. Run an Example
 
