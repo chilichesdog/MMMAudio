@@ -87,13 +87,17 @@ source venv/bin/activate
 pip install numpy scipy librosa pyautogui torch mido python-osc python-rtmidi matplotlib PySide6 mojo==1.0.0b1 hidapi pyaudio
 ```
 
-### 2 In View -> Command Palette -> Python: Select Interpreter, choose `venv/bin/python`. 
+### 2 Install Python and Mojo VSCode Extensions
+
+Click on the Extensions icon on the left hand side of VS Code and install the Python and Mojo extensions.
+
+### 3 In View -> Command Palette -> Python: Select Interpreter, choose `venv/bin/python`. 
 
 if you have trouble installing/running `pyaudio`, try this:
 1. [do this](https://stackoverflow.com/questions/68251169/unable-to-install-pyaudio-on-m1-mac-portaudio-already-installed/68296168#68296168)
 2. Then this uninstall and reinstall `pyaudio` (`hidapi` may be the same).
 
-### 3 VSCode issues - Microsoft giveth, Microsoft taketh away
+### 4 VSCode issues - Microsoft giveth, Microsoft taketh away
 
 VSCode is amazing, but most of the issues users encounter are caused by VSCode's Python inconsistancies. 
 #### a) See 2.3 above on proper vscode settings for Python. 
