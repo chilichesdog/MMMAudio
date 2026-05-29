@@ -817,6 +817,9 @@ struct TopNPeaks(Movable,Copyable):
         for i in range(in_list_len):
             self.ordinal[i] = i
 
+        for i in range(N):
+            out_list[i] = 0
+
         def cmp_fn(a: Int, b: Int) capturing -> Bool:
             return in_list[a] > in_list[b]
 
