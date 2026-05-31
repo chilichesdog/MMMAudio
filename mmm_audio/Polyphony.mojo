@@ -334,11 +334,11 @@ trait GrainObject(PolyObject):
         """This is the function to create if you want to output more than 2 channels using azimuth panning. This will only pan 1 buffer channel."""
         return 0.0
 
-    def next_az[num_buf_chans: Int, num_speakers: Int = 2, width: Float64 = 2.0, orientation: Float64 = 0.5, win_type: Int = WindowType.hann, custom_curve: Int = WindowType.none, bWrap: Bool = False](mut self, buffer: SIMDBuffer[num_buf_chans], buffer_chan: Int = 0) -> MFloat[next_power_of_two(num_speakers)]:
+    def next_az[num_buf_chans: Int, num_speakers: Int = 2, width: Float64 = 2.0, orientation: Float64 = 0.5, win_type: WindowType = WindowType.hann, custom_curve: WindowType = WindowType.none, bWrap: Bool = False](mut self, buffer: SIMDBuffer[num_buf_chans], buffer_chan: Int = 0) -> MFloat[next_power_of_two(num_speakers)]:
         """This is the function to create if you want to output more than 2 channels using azimuth panning. This will only pan 1 buffer channel."""
         return 0.0
 
-    def next_all[num_chans: Int, win_type: Int = WindowType.hann, custom_curve: Int = WindowType.none, bWrap: Bool = False](mut self, buffer: SIMDBuffer[num_chans]) -> MFloat[num_chans]:
+    def next_all[num_chans: Int, win_type: WindowType = WindowType.hann, custom_curve: WindowType = WindowType.none, bWrap: Bool = False](mut self, buffer: SIMDBuffer[num_chans]) -> MFloat[num_chans]:
         """This is the function to create if you want to output all channels of the buffer with no panning."""
         return 0.0
 
@@ -555,8 +555,7 @@ struct Grain(GrainObject):
 
         return panned
 
-    def next_all[num_chans: Int, win_type: WindowType = WindowType.hann, custom_curve: WindowType = WindowType.none, bWrap: Bool = False](mut self, buffer: SIMDBuffer[num_chans]) -> MFloat[num_chans]:
-    def next_az[num_buf_chans: Int, num_speakers: Int = 2, width: Float64 = 2.0, orientation: Float64 = 0.5, win_type: Int = WindowType.hann, custom_curve: Int = WindowType.none, bWrap: Bool = False](mut self, buffer: SIMDBuffer[num_buf_chans], buffer_chan: Int = 0) -> MFloat[next_power_of_two(num_speakers)]:
+    def next_az[num_buf_chans: Int, num_speakers: Int = 2, width: Float64 = 2.0, orientation: Float64 = 0.5, win_type: WindowType = WindowType.hann, custom_curve: WindowType = WindowType.none, bWrap: Bool = False](mut self, buffer: SIMDBuffer[num_buf_chans], buffer_chan: Int = 0) -> MFloat[next_power_of_two(num_speakers)]:
         """Get the next sample of the grain as a multi-channel signal with azimuth panning. This only pans 1 channel of the buffer, specified by buffer_chan. See next_2 for param/arg descriptions and pan_az for details on the panning parameters.
         """
         var sample = self.grain.next_all[win_type=win_type, bWrap=bWrap](buffer)
@@ -565,7 +564,7 @@ struct Grain(GrainObject):
 
         return panned
 
-    def next_all[num_chans: Int, win_type: Int = WindowType.hann, custom_curve: Int = WindowType.none, bWrap: Bool = False](mut self, buffer: SIMDBuffer[num_chans]) -> MFloat[num_chans]:
+    def next_all[num_chans: Int, win_type: WindowType = WindowType.hann, custom_curve: WindowType = WindowType.none, bWrap: Bool = False](mut self, buffer: SIMDBuffer[num_chans]) -> MFloat[num_chans]:
         """Get the next sample of the grain with no panning. This returns all channels of the buffer. See next_2 for param/arg descriptions.
         """
         var sample = self.grain.next_all[win_type=win_type, bWrap=bWrap](buffer)
