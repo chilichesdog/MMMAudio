@@ -57,7 +57,7 @@ See [pixi's installation instructions](https://pixi.prefix.dev/latest/installati
 pixi install
 ```
 
-This should install all relevant packages. Some computers have issues with rtmidi. If this is the case, open the pixi.toml file and change the version of python from 3.13 to 3.12.
+Notice that we use python3.12 in pixi.toml. You might be able to switch to 3.13 or 3.14, but some users experience issues with rtmidi not installing correctly on 3.13+.
 
 ### 3 Edit the .vscode/settings.json file to have the following:
 ```
@@ -78,7 +78,7 @@ You should be good to go.
 
 `cd` into the root of the downloaded repository, set up your virtual environment, and install required libraries. this should work with python 3.12 and above.  If you find it does or doesn't work with other versions [let us know](https://github.com/spluta/MMMAudio/issues).
 
-### 1 depending on your system set up, you may need to explicitly specify the Python version here, eg: 'python3.13 -m venv venv'
+### 1 depending on your system set up, you may need to explicitly specify the Python version here, eg: 'python3.12 -m venv venv'
 
 ```shell
 python -m venv venv 

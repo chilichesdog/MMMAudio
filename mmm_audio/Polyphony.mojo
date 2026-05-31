@@ -334,6 +334,10 @@ trait GrainObject(PolyObject):
         """This is the function to create if you want to output more than 2 channels using azimuth panning. This will only pan 1 buffer channel."""
         return 0.0
 
+    def next_az[num_buf_chans: Int, num_speakers: Int = 2, width: Float64 = 2.0, orientation: Float64 = 0.5, win_type: Int = WindowType.hann, custom_curve: Int = WindowType.none, bWrap: Bool = False](mut self, buffer: SIMDBuffer[num_buf_chans], buffer_chan: Int = 0) -> MFloat[next_power_of_two(num_speakers)]:
+        """This is the function to create if you want to output more than 2 channels using azimuth panning. This will only pan 1 buffer channel."""
+        return 0.0
+
     def next_all[num_chans: Int, win_type: Int = WindowType.hann, custom_curve: Int = WindowType.none, bWrap: Bool = False](mut self, buffer: SIMDBuffer[num_chans]) -> MFloat[num_chans]:
         """This is the function to create if you want to output all channels of the buffer with no panning."""
         return 0.0
@@ -551,6 +555,15 @@ struct Grain(GrainObject):
 
         return panned
 
+    def next_az[num_buf_chans: Int, num_speakers: Int = 2, width: Float64 = 2.0, orientation: Float64 = 0.5, win_type: Int = WindowType.hann, custom_curve: Int = WindowType.none, bWrap: Bool = False](mut self, buffer: SIMDBuffer[num_buf_chans], buffer_chan: Int = 0) -> MFloat[next_power_of_two(num_speakers)]:
+        """Get the next sample of the grain as a multi-channel signal with azimuth panning. This only pans 1 channel of the buffer, specified by buffer_chan. See next_2 for param/arg descriptions and pan_az for details on the panning parameters.
+        """
+        var sample = self.grain.next_all[win_type=win_type, bWrap=bWrap](buffer)
+
+        panned = pan_az[num_speakers, width, orientation](sample[buffer_chan], self.grain.pan) 
+
+        return panned
+
     def next_all[num_chans: Int, win_type: Int = WindowType.hann, custom_curve: Int = WindowType.none, bWrap: Bool = False](mut self, buffer: SIMDBuffer[num_chans]) -> MFloat[num_chans]:
         """Get the next sample of the grain with no panning. This returns all channels of the buffer. See next_2 for param/arg descriptions.
         """
@@ -669,6 +682,30 @@ struct TGrains[T: GrainObject = Grain[], win_type: Int = WindowType.hann, custom
         for i in range(len(self.grains)):
             if self.poly.active_list[i]: 
                 out += self.grains[i].next_az[num_out_chans=num_out_chans, win_type=Self.win_type, custom_curve=Self.custom_curve, bWrap=bWrap](buffer, num_speakers=num_speakers, width=width, orientation=orientation)
+        return out * gain
+
+    @always_inline
+    def next_az[num_speakers: Int = 2, width: Float64 = 2.0, orientation: Float64 = 0.5, bWrap: Bool = False](mut self, buffer: SIMDBuffer, gain: Float64 = 1.0) -> MFloat[next_power_of_two(num_speakers)]:
+        """Generate the next set of grains. Depending on num_out_chans, will either pan a mono signal out 2 channels or a stereo signal out 2 channels.
+        
+        Parameters:
+            num_speakers: The number of speakers in the audio system, which will affect the panning of the grains.
+            width: The width of the panning for the azimuth panning. Higher values will make the panning more extreme, while lower values will make it more subtle (default: 2.0).
+            orientation: The orientation of the panning for the azimuth panning.
+            bWrap: Whether to interpolate between the end and start of the buffer when reading (default: False). When False, reading beyond the end of the buffer will return 0. When True, the index into the buffer will wrap around to the beginning using a modulus.
+
+        Args:
+            buffer: Audio buffer containing the source sound.
+            gain: Amplitude scaling factor for the output of the grains.
+
+        Returns:
+            Output samples for left and right channels as a SIMD vector.
+        """
+
+        out = MFloat[next_power_of_two(num_speakers)](0.0)
+        for i in range(len(self.grains)):
+            if self.poly.active_list[i]: 
+                out += self.grains[i].next_az[num_speakers=num_speakers, width=width, orientation=orientation, win_type=Self.win_type, custom_curve=Self.custom_curve, bWrap=bWrap](buffer)
         return out * gain
 
     @always_inline
