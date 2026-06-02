@@ -318,12 +318,13 @@ struct SplayN[num_channels: Int = 2, pan_points: Int = 128](Movable, Copyable):
 
 
 @always_inline
-def dbap2D[simd_out_size: Int = 4, num_speakers: Int = 4, speaker_pos: InlineArray[MFloat[2], num_speakers] = [MFloat[2](0, 0)], weights: MFloat[simd_out_size] = 0](sample: Float64, pos: MFloat[2], blur: Float64 = 0.1, rolloff: Float64 = 6) -> MFloat[simd_out_size]:
+def dbap2D[num_speakers: Int = 4, speaker_pos: InlineArray[MFloat[2], num_speakers] = [MFloat[2](0, 0)], weights: MFloat[next_power_of_two(num_speakers)] = 0](sample: Float64, pos: MFloat[2], blur: Float64 = 0.1, rolloff: Float64 = 6) -> MFloat[next_power_of_two(num_speakers)]:
     """
     Implements DBAP (Distance Based Amplitude Panning). Takes in a mono signal and produces a signal of arbitrary channel size.
+    For more on DBAP see the paper written by Trond Lossius, Pascal Baltazar, and Theo de la Hague.
+    https://jamoma.org/publications/attachments/icmc2009-dbap-rev1.pdf .
 
     Parameters:
-        simd_out_size: Number of output signals. Must be a power of two that is at least as large as num_speakers.
         num_speakers: The number of speakers as an integer. Must be <= simd_out_size.
         speaker_pos: The speaker positions as an InlineArray of MFloat[2] x/y pairs in meters.
         weights:  An InlineArray of Float64s defining speaker weights for DBAP.
@@ -337,29 +338,25 @@ def dbap2D[simd_out_size: Int = 4, num_speakers: Int = 4, speaker_pos: InlineArr
     Returns:
         MFloat[simd_out_size]: The panned output sample for each speaker.
     """
+    comptime simd_out_size = next_power_of_two(num_speakers)
+    var blur_sq = pow(blur, 2)
 
-   
-    blur_sq = pow(blur, 2)
-    # Calculates the a coefficient given a 6 db rolloff
-    a = rolloff/6.02059991328
+    # Calculates the a coefficient given a rolloff in dB
+    var a = rolloff/6.02059991328
 
    # Set dists to 1.0 by default to avoid divide by 0 when calculating k
-    dists : MFloat[simd_out_size] = 1.0
-
+    var dists : MFloat[simd_out_size] = 1.0
  
     # Calculates the k coefficient and gets distances for every speaker from the source
     for i in range(num_speakers):
         speaker = speaker_pos[i]
-        weight = weights[i]
         xy = pow(speaker - pos, 2)
         # y = pow(speaker[1] - pos[1], 2)
-        dists[i] = sqrt(xy.reduce_add() + blur_sq)
-        
-    
+        dists[i] = sqrt(xy.reduce_add() + blur_sq)  
 
     k = 1/((weights * weights) / pow(dists, 2 * a)).reduce_add()
 
-    # k: Float64 = 1/sum
+   
 
     
     amps = (k * weights) / pow(dists, a) 
