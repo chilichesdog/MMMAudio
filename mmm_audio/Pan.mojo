@@ -200,7 +200,7 @@ def pan_az[num_speakers: Int = 2, width: Float64 = 2.0, orientation: Float64 = 0
         MFloat[next_power_of_two(num_speakers)]: The panned output sample for each speaker.
     """
 
-    comptime simd_out_size = next_power_of_two(num_speakers)
+    # comptime simd_out_size = next_power_of_two(num_speakers) # This currently throws an error
     comptime num_simd_pairs = num_speakers // 2 + (num_speakers % 2)
     comptime rwidth = 1.0 / width
     comptime frange = Float64(num_speakers) * rwidth
@@ -210,7 +210,7 @@ def pan_az[num_speakers: Int = 2, width: Float64 = 2.0, orientation: Float64 = 0
     comptime aligned_pos_const = width * 0.5 + orientation
     var constant = pan * 2.0 * aligned_pos_fac + aligned_pos_const
 
-    out = MFloat[simd_out_size](0.0)
+    out = MFloat[next_power_of_two(num_speakers)](0.0)
 
     # this needs to be checked
     for i in range(num_simd_pairs):
@@ -317,13 +317,14 @@ struct SplayN[num_channels: Int = 2, pan_points: Int = 128](Movable, Copyable):
 
 
 @always_inline
-def dbap2D[num_speakers: Int = 4, speaker_pos: InlineArray[MFloat[2], num_speakers] = [MFloat[2](0, 0)], weights: InlineArray[Float64, num_speakers] = 0](sample: Float64, pos: MFloat[2], blur: Float64 = 0.1, rolloff: Float64 = 6) -> MFloat[next_power_of_two(num_speakers)]:
+def dbap2D[simd_out_size: Int = 4, num_speakers: Int = 4, speaker_pos: InlineArray[MFloat[2], num_speakers] = [MFloat[2](0, 0)], weights: InlineArray[Float64, num_speakers] = 0](sample: Float64, pos: MFloat[2], blur: Float64 = 0.1, rolloff: Float64 = 6) -> MFloat[simd_out_size]:
     """
     Implements DBAP (Distance Based Amplitude Panning). Takes in a mono signal and produces a signal of arbitrary channel size.
     For more on DBAP see the paper written by Trond Lossius, Pascal Baltazar, and Theo de la Hague.
     https://jamoma.org/publications/attachments/icmc2009-dbap-rev1.pdf .
 
     Parameters:
+        simd_out_size: The size of the MFloat vector out. Must be a power of 2.
         num_speakers: The number of speakers as an integer. Must be <= simd_out_size.
         speaker_pos: The speaker positions as an InlineArray of MFloat[2] x/y pairs in meters.
         weights:  An InlineArray of Float64s defining speaker weights for DBAP.
@@ -337,7 +338,7 @@ def dbap2D[num_speakers: Int = 4, speaker_pos: InlineArray[MFloat[2], num_speake
     Returns:
         MFloat[simd_out_size]: The panned output sample for each speaker.
     """
-    comptime simd_out_size = next_power_of_two(num_speakers)
+    # comptime simd_out_size = next_power_of_two(num_speakers) currently this is causing an error.
     comptime vec_weights = array_to_mfloat[simd_out_size, weights]()
     
     var blur_sq = pow(blur, 2)
@@ -351,13 +352,13 @@ def dbap2D[num_speakers: Int = 4, speaker_pos: InlineArray[MFloat[2], num_speake
     # Calculates the k coefficient and gets distances for every speaker from the source
     for i in range(num_speakers):
         speaker = speaker_pos[i]
-        xy = pow(speaker - pos, 2)
+        xy = (speaker - pos) * (speaker - pos)
         # y = pow(speaker[1] - pos[1], 2)
         dists[i] = sqrt(xy.reduce_add() + blur_sq)  
 
     k = 1/((vec_weights * vec_weights) / pow(dists, 2 * a)).reduce_add()
 
-    amps = (k * vec_weights) / pow(dists, a) 
+    amps = (k * vec_weights) / pow(dists, a)
     amps *= sample
 
     return amps
