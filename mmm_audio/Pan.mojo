@@ -346,10 +346,32 @@ def dbap2D[
     Returns:
         MFloat[simd_out_size]: The panned output sample for each speaker.
     """
+    @parameter
+    def variance_of_dists() -> Float64:
+        var accum : Float64 = 0.0 
+        var dists : InlineArray[Float64, num_speakers] = [0.0]
+        for i in range(num_speakers):
+            dist = speaker_pos[i] * speaker_pos[i]
+            dist_from_center = sqrt(dist.reduce_add())
+
+            dists[i] = dist_from_center
+            accum += dist_from_center
+
+        var mean : Float64 = accum // Float64(num_speakers)
+        var variance_accum : Float64 = 0.0
+        for speaker in dists:
+            variance_accum += pow(speaker - mean, 2)
+
+
+        return variance_accum // Float64(num_speakers - 1)
+    
     comptime simd_out_size = next_power_of_two(num_speakers)
     comptime vec_weights = array_to_mfloat[simd_out_size, weights]()
     
-    var blur_sq = pow(max(0.00001, blur), 2)
+    comptime speaker_variance = variance_of_dists()
+    
+    
+    var blur_sq = pow(max(0.00001, blur) * speaker_variance, 2)
 
     # Calculates the a coefficient given a rolloff in dB
     var a = rolloff/6.02059991328
