@@ -11,7 +11,7 @@ trait Tapable(Movable, Copyable):
 #     def tap[num_chans: Int](mut self, delay_time: MFloat[num_chans]) -> MFloat[num_chans]:
 #       ...
 
-struct Delay[num_chans: Int = 1, interp: Interp = Interp.linear](Tapable, Resettable):
+struct Delay[num_chans: Int = 1, interp: Interp = Interp.linear](Tapable, PolyReset):
     """A variable delay line with interpolation.
 
     Parameters:
@@ -227,7 +227,7 @@ def calc_feedback[num_chans: Int = 1](delaytime: MFloat[num_chans], decaytime: M
 
       return zero.select(MFloat[num_chans](0.0), dec_pos.select(absret, -absret))
 
-struct Comb[num_chans: Int = 1, interp: Interp = Interp.quad](Tapable, Resettable):
+struct Comb[num_chans: Int = 1, interp: Interp = Interp.quad](Tapable, PolyReset):
     """
     A simple comb filter using a delay line with feedback.
 
@@ -293,7 +293,7 @@ struct Comb[num_chans: Int = 1, interp: Interp = Interp.quad](Tapable, Resettabl
         feedback = calc_feedback(delay_time, decay_time)
         return self.next(input, delay_time, feedback)
 
-struct LP_Comb[num_chans: Int = 1, interp: Interp = Interp.linear](Tapable, Resettable):
+struct LP_Comb[num_chans: Int = 1, interp: Interp = Interp.linear](Tapable, PolyReset):
     """
     A simple comb filter with an integrated one-pole low-pass filter.
     
@@ -351,7 +351,7 @@ struct LP_Comb[num_chans: Int = 1, interp: Interp = Interp.linear](Tapable, Rese
       self.one_pole.reset()
       self.fb = MFloat[Self.num_chans](0.0)
 
-struct Allpass[num_chans: Int = 1, interp: Interp = Interp.linear](Tapable, Resettable):
+struct Allpass[num_chans: Int = 1, interp: Interp = Interp.linear](Tapable, PolyReset):
     """
     A simple allpass filter using a delay line with feedback.
     
@@ -427,7 +427,7 @@ struct Allpass[num_chans: Int = 1, interp: Interp = Interp.linear](Tapable, Rese
         self.delay.reset()
         
 
-struct FB_Delay[num_chans: Int = 1, interp: Interp = Interp.lagrange4, ADAA_dist: Bool = False, ov_samp: TimesOversampling = TimesOversampling.none](Tapable, Resettable):
+struct FB_Delay[num_chans: Int = 1, interp: Interp = Interp.lagrange4, ADAA_dist: Bool = False, ov_samp: TimesOversampling = TimesOversampling.none](Tapable, PolyReset):
     """A feedback delay structured like a Comb filter, but with possible feedback coefficient above 1 due to an integrated tanh function.
     
     By default, Anti-aliasing is disabled and no [oversampling](Oversampling.md) is applied, but this can be changed by setting the ADAA_dist and ov_samp template parameters.

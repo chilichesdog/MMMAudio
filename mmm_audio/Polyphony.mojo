@@ -37,23 +37,23 @@ trait PolyObject(Movable, Copyable):
         pass
 
     def check_ability[T: AnyType](self, animal: T) -> Bool:
-        comptime if conforms_to(T, Resettable):
+        comptime if conforms_to(T, PolyReset):
             return True
         else:
             return False
 
-    def reset_resettable(mut self):
+    def reset_Resettable(mut self):
         comptime r = reflect[Self]()
         comptime names = r.field_names()
         comptime types = r.field_types()
         
         comptime for idx in range(r.field_count()):
             comptime comptime_field_type = types[idx]
-            comptime if conforms_to(comptime_field_type, Resettable):
+            comptime if conforms_to(comptime_field_type, PolyReset):
                 print("Resetting field:", names[idx])
                 r.field_ref[idx](self).reset()
 
-trait Resettable():
+trait PolyReset():
     """A trait for UGens that need to be reset when a Poly voice is triggered or released. If a UGen implements this trait."""
     def reset(mut self):
         """A function called when a voice needs to be reset.
@@ -608,7 +608,7 @@ struct Grain(GrainObject):
         """Reset the grain to its initial state. This can be used to retrigger the grain with the same parameters."""
         self.grain.reset()
 
-struct TGrains[T: GrainObject = Grain[], win_type: WindowType = WindowType.hann, custom_curve: WindowType = WindowType.none](Movable, Copyable, Resettable):
+struct TGrains[T: GrainObject = Grain[], win_type: WindowType = WindowType.hann, custom_curve: WindowType = WindowType.none](Movable, Copyable, PolyReset):
     """
     Triggered granular synthesis. Each trigger starts a new grain.
     """
@@ -774,7 +774,7 @@ struct TGrains[T: GrainObject = Grain[], win_type: WindowType = WindowType.hann,
         for ref grain in self.grains:
             grain.reset()
 
-struct PitchShift[num_chans: Int = 1, win_type: WindowType = WindowType.hann](Movable, Copyable, Resettable):
+struct PitchShift[num_chans: Int = 1, win_type: WindowType = WindowType.hann](Movable, Copyable, PolyReset):
     """
     An N channel granular pitchshifter. Each channel is processed in parallel.
 

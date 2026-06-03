@@ -206,7 +206,7 @@ struct SVFModes:
     comptime lowshelf: Int64 = 7
     comptime highshelf: Int64 = 8
 
-struct SVF[num_chans: Int = 1](Movable, Copyable):
+struct SVF[num_chans: Int = 1](Movable, Copyable, PolyReset):
     """A State Variable Filter struct.
 
     To use the different modes, see the mode-specific methods.
@@ -528,7 +528,7 @@ struct lpf_LR4[num_chans: Int = 1](Movable, Copyable):
         # Second stage
         return self.svf2.lpf(cf, frequency, self.q)  # Second stage
 
-struct OnePole[num_chans: Int = 1](Movable, Copyable, Resettable):
+struct OnePole[num_chans: Int = 1](Movable, Copyable, PolyReset):
     """One-pole IIR filter that can be configured as lowpass or highpass.
 
     Parameters:
@@ -650,7 +650,7 @@ struct Amplitude[num_chans: Int](Movable, Copyable):
 
         return self.last_val
 
-struct DCTrap[num_chans: Int=1](Movable, Copyable, Resettable):
+struct DCTrap[num_chans: Int=1](Movable, Copyable, PolyReset):
     """DC Trap filter.
     
     Implementation from Digital Sound Generation by Beat Frei. The cutoff
@@ -695,7 +695,7 @@ struct DCTrap[num_chans: Int=1](Movable, Copyable, Resettable):
 
         return sample
 
-struct VAOnePole[num_chans: Int = 1](Movable, Copyable, Resettable):
+struct VAOnePole[num_chans: Int = 1](Movable, Copyable, PolyReset):
     """
     One-pole filter based on the Virtual Analog design by 
     Vadim Zavalishin in "The Art of VA Filter Design".
@@ -757,7 +757,7 @@ struct VAOnePole[num_chans: Int = 1](Movable, Copyable, Resettable):
         """Clears filter's internal state.""" 
         self.last_1 = MFloat[Self.num_chans](0.0)
 
-struct VAMoogLadder[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversampling.none](Movable, Copyable, Resettable):
+struct VAMoogLadder[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversampling.none](Movable, Copyable, PolyReset):
     """Virtual Analog Moog Ladder Filter.
     
     Implementation based on the Virtual Analog design by Vadim Zavalishin in 
@@ -885,7 +885,7 @@ struct VAMoogLadder[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversa
                     self.oversampling.add_sample(lp4)
             return self.oversampling.get_sample()
 
-struct Reson[num_chans: Int = 1](Movable, Copyable, Resettable):
+struct Reson[num_chans: Int = 1](Movable, Copyable, PolyReset):
     """Resonant filter with lowpass, highpass, and bandpass modes.
 
     A translation of Julius Smith's Faust implementation of [tf2s (virtual analog) resonant filters](https://github.com/grame-cncm/faustlibraries/blob/6061da8bf2279ae4281333861a3dc6254e9076f9/filters.lib#L2054).
@@ -977,7 +977,7 @@ struct Reson[num_chans: Int = 1](Movable, Copyable, Resettable):
         self.tf2.reset()
 
 @doc_hidden
-struct FIR[num_chans: Int = 1](Movable, Copyable, Resettable):
+struct FIR[num_chans: Int = 1](Movable, Copyable, PolyReset):
     """Finite Impulse Response (FIR) filter implementation.
 
     A translation of Julius Smith's Faust implementation of digital filters.
@@ -1024,7 +1024,7 @@ struct FIR[num_chans: Int = 1](Movable, Copyable, Resettable):
         self.index = 0
 
 @doc_hidden
-struct IIR[num_chans: Int = 1](Movable, Copyable, Resettable):
+struct IIR[num_chans: Int = 1](Movable, Copyable, PolyReset):
     """Infinite Impulse Response (IIR) filter implementation.
 
     A translation of Julius Smith's Faust implementation of digital filters.
@@ -1072,7 +1072,7 @@ struct IIR[num_chans: Int = 1](Movable, Copyable, Resettable):
         self.fb = MFloat[Self.num_chans](0.0)
 
 @doc_hidden
-struct tf2[num_chans: Int = 1](Movable, Copyable, Resettable):
+struct tf2[num_chans: Int = 1](Movable, Copyable, PolyReset):
     """Second-order transfer function filter implementation.
 
     A translation of Julius Smith's Faust implementation of digital filters.
@@ -1153,7 +1153,7 @@ struct BiquadModes:
     comptime lowshelf: Int64 = 6
     comptime highshelf: Int64 = 7
 
-struct Biquad[num_chans: Int = 1](Movable, Copyable, Resettable):
+struct Biquad[num_chans: Int = 1](Movable, Copyable, PolyReset):
     """A Biquad filter struct.
 
     To use the different modes, see the mode-specific methods.
@@ -1504,7 +1504,7 @@ struct Biquad[num_chans: Int = 1](Movable, Copyable, Resettable):
         """
         return self.next[BiquadModes.highshelf](input, frequency, q, gain_db)
 
-struct MedianFilter(Movable, Copyable, Resettable):
+struct MedianFilter(Movable, Copyable, PolyReset):
     """A simple median filter for scalar samples.
 
     The window size is forced to be odd and at least 1.

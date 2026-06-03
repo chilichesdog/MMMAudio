@@ -1,6 +1,6 @@
 from mmm_audio import *
 
-struct Oversampling[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversampling.none](Movable, Copyable, Resettable):
+struct Oversampling[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversampling.none](Movable, Copyable, PolyReset):
     """A struct that collects ` times_oversampling` samples and then downsamples them using a low-pass filter. Add a sample for each oversampling iteration with `add_sample()`, then get the downsampled output with `get_sample()`.
 
     Parameters:
@@ -51,7 +51,7 @@ struct Oversampling[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversa
         """Reset the internal state of the upsampler."""
         self.lpf.reset()
         
-struct Upsampler[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversampling.x2](Movable, Copyable, Resettable):
+struct Upsampler[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversampling.x2](Movable, Copyable, PolyReset):
     """A struct that upsamples the input signal by the specified factor using a low-pass filter.
 
     Parameters:

@@ -288,7 +288,7 @@ struct HardClipAD[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversamp
                 self.oversampling.add_sample(y)
             return self.oversampling.get_sample()
 
-struct TanhAD[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversampling.none](Copyable, Movable, Resettable):
+struct TanhAD[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversampling.none](Copyable, Movable, PolyReset):
     """Anti-Derivative Anti-aliasing first order tanh function.
     
     This struct provides a first order anti-aliased version of the `tanh` function using the Anti-Derivative Anti-aliasing (ADAA) method with optional Oversampling. See [Practical Considerations for Antiderivative Anti-aliasing (Chowdhury)](https://ccrma.stanford.edu/~jatin/Notebooks/adaa.html) for more details on how this works.
