@@ -421,7 +421,7 @@ struct FB_Delay[num_chans: Int = 1, interp: Interp = Interp.lagrange4, ADAA_dist
       num_chans: Size of the SIMD vector.
       interp: The interpolation method to use. See the struct [Interp](MMMWorld.md#struct-interp) for interpolation options.
       ADAA_dist: Whether to apply ADAA distortion to the feedback signal instead of standard tanh.
-      ov_samp: The [oversampling](Oversampling.md) index for ADAA distortion. 0 = no oversampling, 1 = 2x, 2 = 4x, 3 = 8x, 4 = 16x.
+      ov_samp: The [oversampling](MMMWorld.md#struct-timesoversampling) for ADAA distortion.
     """
 
     var world: World

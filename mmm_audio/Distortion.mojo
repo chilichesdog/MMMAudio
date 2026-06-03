@@ -72,7 +72,7 @@ struct SoftClipAD[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversamp
     
     Parameters:
         num_chans: The number of channels for SIMD operations.
-        ov_samp: The oversampling index (0 = no oversampling, 1 = 2x, 2 = 4x, 3 = 8x, 4 = 16x).
+        ov_samp: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
         degree: The degree of the soft clipping polynomial (must be odd).
     """
     var x1: MFloat[Self.num_chans]
@@ -176,7 +176,7 @@ struct HardClipAD[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversamp
     
     Parameters:
         num_chans: The number of channels for SIMD operations.
-        ov_samp: The oversampling index (0 = no oversampling, 1 = 2x, 2 = 4x, 3 = 8x, 4 = 16x).
+        ov_samp: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
     """
     var x1: MFloat[Self.num_chans]
     var x2: MFloat[Self.num_chans]
@@ -274,7 +274,7 @@ struct TanhAD[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversampling
 
     Parameters:
         num_chans: The number of channels for SIMD operations.
-        ov_samp: The oversampling index (0 = no oversampling, 1 = 2x, 2 = 4x, etc.).
+        ov_samp: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
     """
 
     var x1: MFloat[Self.num_chans]
@@ -423,7 +423,7 @@ struct BuchlaWavefolder[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOv
     
     Parameters:
         num_chans: The number of channels for SIMD operations.
-        ov_samp: The oversampling index (0 = no oversampling, 1 = 2x, 2 = 4x, etc.).
+        ov_samp: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
     """
     
     comptime x_mix: Float64 = 5.0

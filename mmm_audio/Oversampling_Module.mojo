@@ -5,7 +5,7 @@ struct Oversampling[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversa
 
     Parameters:
         num_chans: Number of channels for the oversampling buffer.
-        ov_samp: The oversampling factor (e.g., 2 for 2x oversampling).
+        ov_samp: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
     """
 
     var buffer: InlineArray[MFloat[Self.num_chans], Self.ov_samp.times]  # Buffer for oversampled values
@@ -52,7 +52,7 @@ struct Upsampler[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversampl
 
     Parameters:
         num_chans: Number of channels for the upsampler.
-        ov_samp: The oversampling factor (e.g., 2 for 2x oversampling).
+        ov_samp: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
     """
     var lpf: OS_LPF4[Self.num_chans]
 

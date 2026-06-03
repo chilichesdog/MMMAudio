@@ -12,7 +12,7 @@ struct Phasor[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversampling
 
     Parameters:
         num_chans: Number of channels.
-        ov_samp: Oversampling index (0 = no oversampling, 1 = 2x, up to 4 = 16x). Phasor does not downsample its output, so oversampling is only useful when used as part of other oversampled oscillators.
+        ov_samp: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling. Phasor does not downsample its output, so oversampling is only useful when used as part of other oversampled oscillators.
     """
     var phase: MFloat[Self.num_chans]
     var freq_mul: Float64
@@ -106,7 +106,7 @@ struct Phasor[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversampling
         """Sets times oversampling for the oscillator when it is used in an Oversampling loop. This is not for when using the oscillator with the built-in oversampling, but rather for when the oscillator is used as part of a custom oversampling implementation.
 
         Args:
-            times_oversampling: The new oversampling multiplier (1 for no oversampling, 2 for 2x, 4 for 4x, etc.).
+            times_oversampling: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
         """
         self.freq_mul = TimesOversampling.get_freq_mul(self.world, times_oversampling)
 
@@ -120,7 +120,7 @@ struct Impulse[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversamplin
 
     Parameters:
         num_chans: Number of channels (default is 1).
-        ov_samp: Oversampling index (0 = no oversampling, 1 = 2x, etc.; default is 0).
+        ov_samp: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
     """
     var phasor: Phasor[Self.num_chans, Self.ov_samp]  # Instance of the Phasor
 
@@ -136,7 +136,7 @@ struct Impulse[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversamplin
         """Sets times oversampling for the oscillator when it is used in an Oversampling loop. This is not for when using the oscillator with the built-in oversampling, but rather for when the oscillator is used as part of a custom oversampling implementation.
 
         Args:
-            times_oversampling: The new oversampling multiplier (1 for no oversampling, 2 for 2x, 4 for 4x, etc.).
+            times_oversampling: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
         """
         self.phasor.set_oversampling(times_oversampling)
 
@@ -182,7 +182,7 @@ struct Osc[num_chans: Int = 1, interp: Interp = Interp.linear, ov_samp: TimesOve
     Parameters:
         num_chans: Number of channels (default is 1).
         interp: Interpolation method. See [Interp](MMMWorld.md/#struct-interp) struct for options (default is Interp.linear).
-        ov_samp: [Oversampling](Oversampling.md) index (0 = no oversampling, 1 = 2x, 2 = 4x, etc.; default is 0).
+        ov_samp: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
     """
 
     var phasor: Phasor[Self.num_chans, Self.ov_samp]
@@ -205,7 +205,7 @@ struct Osc[num_chans: Int = 1, interp: Interp = Interp.linear, ov_samp: TimesOve
         """Sets times oversampling for the oscillator when it is used in an Oversampling loop. This is not for when using the oscillator with the built-in oversampling, but rather for when the oscillator is used as part of a custom oversampling implementation.
 
         Args:
-            times_oversampling: The new oversampling multiplier (1 for no oversampling, 2 for 2x, 4 for 4x, etc.).
+            times_oversampling: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
         """
         self.phasor.set_oversampling(times_oversampling)
 
@@ -601,7 +601,7 @@ struct LFOsc[num_chans: Int = 1] (Movable, Copyable):
         """Sets times oversampling for the oscillator when it is used in an Oversampling loop. This is not for when using the oscillator with the built-in oversampling, but rather for when the oscillator is used as part of a custom oversampling implementation.
 
         Args:
-            times_oversampling: The new oversampling multiplier (1 for no oversampling, 2 for 2x, 4 for 4x, etc.).
+            times_oversampling: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
         """
         self.phasor.set_oversampling(times_oversampling)
 
@@ -672,7 +672,7 @@ struct Dust[num_chans: Int = 1] (Movable, Copyable):
         """Sets times oversampling for the oscillator when it is used in an Oversampling loop. This is not for when using the oscillator with the built-in oversampling, but rather for when the oscillator is used as part of a custom oversampling implementation.
 
         Args:
-            times_oversampling: The new oversampling multiplier (1 for no oversampling, 2 for 2x, 4 for 4x, etc.).
+            times_oversampling: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
         """
         self.impulse.set_oversampling(times_oversampling)
 
@@ -802,7 +802,7 @@ struct LFNoise[num_chans: Int = 1, interp: Interp = Interp.cubic](Movable, Copya
         """Sets times oversampling for the oscillator when it is used in an Oversampling loop. This is not for when using the oscillator with the built-in oversampling, but rather for when the oscillator is used as part of a custom oversampling implementation.
 
         Args:
-            times_oversampling: The new oversampling multiplier (1 for no oversampling, 2 for 2x, 4 for 4x, etc.).
+            times_oversampling: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
         """
         self.impulse.set_oversampling(times_oversampling)
 
@@ -855,7 +855,7 @@ struct Sweep[num_chans: Int = 1](Movable, Copyable):
         """Sets times oversampling for the oscillator when it is used in an Oversampling loop. This is not for when using the oscillator with the built-in oversampling, but rather for when the oscillator is used as part of a custom oversampling implementation.
 
         Args:
-            times_oversampling: The new oversampling multiplier (1 for no oversampling, 2 for 2x, 4 for 4x, etc.).
+            times_oversampling: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
         """
         self.freq_mul = TimesOversampling.get_freq_mul(self.world, times_oversampling)
 
@@ -917,7 +917,7 @@ struct Line[num_chans: Int = 1, linexpcurve: Int = 0](Movable, Copyable):
         """Sets times oversampling for the oscillator when it is used in an Oversampling loop. This is not for when using the oscillator with the built-in oversampling, but rather for when the oscillator is used as part of a custom oversampling implementation.
 
         Args:
-            times_oversampling: The new oversampling multiplier (1 for no oversampling, 2 for 2x, 4 for 4x, etc.).
+            times_oversampling: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
         """
         self.freq_mul = TimesOversampling.get_freq_mul(self.world, times_oversampling)
 

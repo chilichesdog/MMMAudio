@@ -11,7 +11,7 @@ struct PAF[
     Parameters:
         num_chans: Number of channels.
         interp: Interpolation method. See [Interp](MMMWorld.md/#struct-interp) struct for options.
-        ov_samp: [Oversampling](Oversampling.md) index (0 = no oversampling, 1 = 2x, 2 = 4x, etc.).
+        ov_samp: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
         wrap_gaussian: Whether to wrap indices that go out of bounds in the gaussian window. Puckette's design only uses half of the table, but enabling wrap_gaussian uses the entire table, resulting in a wider pallette of timbres.
     """
 

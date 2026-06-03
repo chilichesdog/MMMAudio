@@ -226,7 +226,7 @@ struct LFSRNoise[num_chans: Int = 1](Copyable, Movable):
         """Sets times oversampling for the oscillator when it is used in an Oversampling loop. This is not for when using the oscillator with the built-in oversampling, but rather for when the oscillator is used as part of a custom oversampling implementation.
 
         Args:
-            times_oversampling: The new oversampling multiplier (1 for no oversampling, 2 for 2x, 4 for 4x, etc.).
+            times_oversampling: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
         """
         self.freq_mul = TimesOversampling.get_freq_mul(self.world, times_oversampling)
 

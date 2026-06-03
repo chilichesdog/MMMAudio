@@ -738,7 +738,7 @@ struct VAMoogLadder[num_chans: Int = 1, ov_samp: TimesOversampling = TimesOversa
 
     Parameters:
         num_chans: Number of channels to process in parallel.
-        ov_samp: [oversampling](Oversampling.md) factor as a power of two (0 = no oversampling, 1 = 2x, 2 = 4x, etc).
+        ov_samp: An [oversampling](MMMWorld.md#struct-timesoversampling) struct to indicate times oversampling.
     """
     var nyquist: Float64
     var step_val: Float64
