@@ -320,6 +320,7 @@ struct SplayN[num_channels: Int = 2, pan_points: Int = 128](Movable, Copyable):
 @always_inline
 def dbap2D[
     num_speakers: Int, 
+    simd_out_size: Int,
     speaker_pos: InlineArray[MFloat[2], num_speakers],
     weights: InlineArray[Float64, num_speakers]]
     (
@@ -327,7 +328,7 @@ def dbap2D[
         pos: MFloat[2], 
         blur: Float64 = 0.1, 
         rolloff: Float64 = 6
-    ) -> MFloat[next_power_of_two(num_speakers)]:
+    ) -> MFloat[simd_out_size]:
     """
     Implements DBAP (Distance Based Amplitude Panning). Takes in a mono signal and produces a signal of arbitrary channel size.
     For more on DBAP see the paper written by Trond Lossius, Pascal Baltazar, and Theo de la Hague.
@@ -335,6 +336,7 @@ def dbap2D[
 
     Parameters:
         num_speakers: The number of speakers as an integer.
+        simd_out_size: Must be a power of 2 and greater than num_speakers
         speaker_pos: The speaker positions as an InlineArray of MFloat[2] x/y pairs in meters from a center position.
         weights: An InlineArray of Float64s (between 0.0 and 1.0) defining speaker weights for DBAP. Speaker weights allow for a source to be restricted to a subset of speakers. Speaker weights of 0.0 will disallow a source from playing through that speaker.
 
@@ -370,7 +372,7 @@ def dbap2D[
     
     # comptime speaker_variance = variance_of_dists[num_speakers, speaker_pos]()
     
-    comptime simd_out_size = next_power_of_two(num_speakers)
+    # comptime assert (simd_out_size < num_speakers or simd_out_size % 2 != 0), "simd_out_size must be a power of 2 and greater than num_speakers"
     comptime vec_weights = array_to_mfloat[simd_out_size, weights]()
     # var blur_sq = pow(max(0.00001, blur) * speaker_variance, 2)
     var blur_sq = pow(max(0.00001, blur), 2)
