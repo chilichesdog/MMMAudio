@@ -17,7 +17,7 @@ struct DbapSynth(Movable, Copyable):
         self.pos = MFloat[2](0.0, 0.0)
 
     def next(mut self) -> MFloat[4]:
-        # self.messenger.update("pos", self.pos)
+        
         self.pos[0] = linlin(self.world[].mouse_x, 0.0, 1.0, -1.0, 1.0)
         self.pos[1] = linlin(self.world[].mouse_y, 0.0, 1.0, -1.0, 1.0)
         comptime speakers : InlineArray[MFloat[2], 4] = [
@@ -36,8 +36,7 @@ struct DbapSynth(Movable, Copyable):
         sig = self.filt.bpf(sig, 1200, 10.0, 1.0)
         out = dbap2D[4, speakers, weights](sig, self.pos)
         out2 = MFloat[4](out[0], out[1], out[2], out[4])
-        # uncomment below for use the phase of the Dust oscillator instead of the impulse
-        # out = self.dust.get_phase()
+        
 
         return out2
 
