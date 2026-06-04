@@ -336,15 +336,15 @@ def dbap2D[
 
     Parameters:
         num_speakers: The number of speakers as an integer.
-        simd_out_size: Must be a power of 2 and greater than num_speakers
+        simd_out_size: Must be a power of 2 and greater than num_speakers.
         speaker_pos: The speaker positions as an InlineArray of MFloat[2] x/y pairs in meters from a center position.
         weights: An InlineArray of Float64s (between 0.0 and 1.0) defining speaker weights for DBAP. Speaker weights allow for a source to be restricted to a subset of speakers. Speaker weights of 0.0 will disallow a source from playing through that speaker.
 
     Args:
         sample: Mono input sample.
-        pos: X/Y position of the source in meters as an MFloat[2].
-        blur: Blurs the source, causing it to spread to more speakers. Values must be greater than or equal to 0, with 0 being .
-        rolloff: The dB amplitude rolloff.
+        pos: X/Y position of the source from center in meters as an MFloat[2].
+        blur: Blurs the source, causing it to spread to more speakers. Values must be greater than or equal to 0, with 0 being the most localizable and values > 0 becoming less and less localizable. There is no limit to the amount of blur but values over 5 have diminishing returns.
+        rolloff: The amplitude rolloff in dB, this must be > 0.0. 6.0 equals the inverse distance law for sound in an open field. Lower values will decrease the attenuation of the signal over distance, while larger values will increase this attenuation.
     
     Returns:
         MFloat[simd_out_size]: The panned output sample for each speaker.
