@@ -4,6 +4,7 @@ from std.algorithm import vectorize
 from mmm_audio import *
 
 
+
 @always_inline
 def pan2(samples: Float64, pan: Float64) -> MFloat[2]:
     """
@@ -324,6 +325,7 @@ struct SplayN[num_channels: Int = 2, pan_points: Int = 128](Movable, Copyable):
 @always_inline
 def dbap2D[
     num_speakers: Int, 
+    simd_out_size: Int,
     speaker_pos: InlineArray[MFloat[2], num_speakers],
     weights: InlineArray[Float64, num_speakers]]
     (
@@ -331,30 +333,54 @@ def dbap2D[
         pos: MFloat[2], 
         blur: Float64 = 0.1, 
         rolloff: Float64 = 6
-    ) -> MFloat[next_power_of_two(num_speakers)]:
+    ) -> MFloat[simd_out_size]:
     """
     Implements DBAP (Distance Based Amplitude Panning). Takes in a mono signal and produces a signal of arbitrary channel size.
     For more on DBAP see the paper written by Trond Lossius, Pascal Baltazar, and Theo de la Hague.
     https://jamoma.org/publications/attachments/icmc2009-dbap-rev1.pdf .
 
     Parameters:
-        num_speakers: The number of speakers as an integer. Must be <= simd_out_size.
-        speaker_pos: The speaker positions as an InlineArray of MFloat[2] x/y pairs in meters.
-        weights:  An InlineArray of Float64s defining speaker weights for DBAP.
+        num_speakers: The number of speakers as an integer.
+        simd_out_size: Must be a power of 2 and greater than num_speakers.
+        speaker_pos: The speaker positions as an InlineArray of MFloat[2] x/y pairs in meters from a center position.
+        weights: An InlineArray of Float64s (between 0.0 and 1.0) defining speaker weights for DBAP. Speaker weights allow for a source to be restricted to a subset of speakers. Speaker weights of 0.0 will disallow a source from playing through that speaker.
 
     Args:
         sample: Mono input sample.
-        pos: X/Y position of the source in meters as an MFloat[2].
-        blur: Blur between speakers. Values > 0 spread the source to more speakers.
-        rolloff: The dB Rolloff (defaults to 6db).
+        pos: X/Y position of the source from center in meters as an MFloat[2].
+        blur: Blurs the source, causing it to spread to more speakers. Values must be greater than or equal to 0, with 0 being the most localizable and values > 0 becoming less and less localizable. There is no limit to the amount of blur but values over 5 have diminishing returns.
+        rolloff: The amplitude rolloff in dB, this must be > 0.0. 6.0 equals the inverse distance law for sound in an open field. Lower values will decrease the attenuation of the signal over distance, while larger values will increase this attenuation.
     
     Returns:
         MFloat[simd_out_size]: The panned output sample for each speaker.
     """
-    comptime simd_out_size = next_power_of_two(num_speakers)
-    comptime vec_weights = array_to_mfloat[simd_out_size, weights]()
+    # @parameter
+    # def variance_of_dists() -> Float64:
+    #     var accum : Float64 = 0.0 
+    #     var dists : InlineArray[Float64, num_speakers] = [0.0]
+    #     for i in range(num_speakers):
+    #         dist = speaker_pos[i] * speaker_pos[i]
+    #         dist_from_center = sqrt(dist.reduce_add())
+
+    #         dists[i] = dist_from_center
+    #         accum += dist_from_center
+
+    #     var mean : Float64 = accum // Float64(num_speakers)
+    #     var variance_accum : Float64 = 0.0
+    #     for speaker in dists:
+    #         variance_accum += pow(speaker - mean, 2)
+
+
+    #     return variance_accum // Float64(num_speakers - 1)
     
-    var blur_sq = pow(blur, 2)
+   
+    
+    # comptime speaker_variance = variance_of_dists[]()
+    
+    # comptime assert (simd_out_size > num_speakers and simd_out_size % 2 == 0), "simd_out_size must be a power of 2 and greater than num_speakers"
+    comptime vec_weights = array_to_mfloat[simd_out_size, weights]()
+    # var blur_sq = pow(max(0.00001, blur) * speaker_variance, 2)
+    var blur_sq = pow(max(0.00001, blur), 2)
 
     # Calculates the a coefficient given a rolloff in dB
     var a = rolloff/6.02059991328
