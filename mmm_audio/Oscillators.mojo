@@ -230,24 +230,11 @@ struct Osc[num_chans: Int = 1, interp: Interp = Interp.linear, ov_samp: TimesOve
         Returns:
             The next sample of the oscillator output.
         """
-        comptime if osc_type == OscType.sine:
-            self.world[].make_sine_osc = True
-        elif osc_type == OscType.triangle:
-            pass
-        elif osc_type == OscType.saw:
-            pass
-        elif osc_type == OscType.square:
-            pass
-
         var trig_mask = MBool[self.num_chans](fill=trig)
             
         out = MFloat[self.num_chans](0.0)
 
-        comptime osc_type_int = Int(osc_type)
-
         comptime if Self.ov_samp == TimesOversampling.none:
-            
-            # last_phase = self.phasor.phase  # Store the last phase for sinc interpolation
             phase = self.phasor.next(freq, phase_offset, trig_mask)
             temp = self.world[].osc_buffers.value()
             comptime for chan in range(self.num_chans):
@@ -256,8 +243,6 @@ struct Osc[num_chans: Int = 1, interp: Interp = Interp.linear, ov_samp: TimesOve
             return out
         else:
             comptime for i in range(Self.ov_samp.times):
-                
-                # last_phase = self.phasor.phase  # Store the last phase for sinc interpolation
                 phase = self.phasor.next(freq, phase_offset, trig_mask)
 
                 sample = MFloat[self.num_chans](0.0)
